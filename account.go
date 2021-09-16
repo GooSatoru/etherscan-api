@@ -129,8 +129,8 @@ func (c *Client) ERC721Transfers(contractAddress, address *string, startBlock *i
 	return
 }
 
-// NFTTxByAddress get a list of "erc72 - token transfer events" by address.
-func (c *Client) NFTTxByAddress(contractAddress, address *string, startBlock *int, endBlock *int, desc bool) (txs []ERC721Transfer, err error) {
+// ERC721TransfersByAddress get a list of "erc72 - token transfer events" by address.
+func (c *Client) ERC721TransfersByAddress(address *string, startBlock *int, endBlock *int, desc bool) (txs []ERC721Transfer, err error) {
 	param := M{
 		"address": address,
 	}
