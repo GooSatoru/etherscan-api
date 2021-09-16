@@ -65,8 +65,8 @@ type InternalTx struct {
 	ErrCode         string  `json:"errCode"`
 }
 
-// ERC20Transfer holds info from ERC20 token transfer event query
-type ERC20Transfer struct {
+// Transfer holds base info from ERC20 and ERC721 token transfer event query
+type Transfer struct {
 	BlockNumber       int     `json:"blockNumber,string"`
 	TimeStamp         Time    `json:"timeStamp"`
 	Hash              string  `json:"hash"`
@@ -86,6 +86,18 @@ type ERC20Transfer struct {
 	CumulativeGasUsed int     `json:"cumulativeGasUsed,string"`
 	Input             string  `json:"input"`
 	Confirmations     int     `json:"confirmations,string"`
+}
+
+// ERC20Transfer holds info from ERC20 token transfer event query
+type ERC20Transfer struct {
+	Transfer
+	Value *BigInt `json:"value"`
+}
+
+// ERC721Transfer holds info from ERC721 token transfer event query
+type ERC721Transfer struct {
+	Transfer
+	TokenID *BigInt `json:"tokenID"`
 }
 
 // MinedBlock holds info from query for mined block by address
