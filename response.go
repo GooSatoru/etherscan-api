@@ -19,6 +19,16 @@ type Envelope struct {
 	Result json.RawMessage `json:"result"`
 }
 
+// HecoEnvelope is the carrier of nearly every response
+type HecoEnvelope struct {
+	// 1 for good, 0 for error
+	Status int `json:"status"`
+	// OK for good, other words when Status equals 0
+	Message string `json:"message"`
+	// where response lies
+	Result json.RawMessage `json:"result"`
+}
+
 // AccountBalance account and its balance in pair
 type AccountBalance struct {
 	Account string  `json:"account"`
