@@ -52,6 +52,29 @@ func (c *Client) NormalTxByAddress(address string, startBlock *int, endBlock *in
 	return
 }
 
+// HecoNormalTxByAddress gets a list of "normal" transactions by address
+//
+// startBlock and endBlock can be nil
+//
+// if desc is true, result will be sorted in blockNum descendant order.
+func (c *Client) HecoNormalTxByAddress(address string, startBlock *int, endBlock *int, page int, offset int, desc bool) (txs []NormalTx, err error) {
+	param := M{
+		"address": address,
+		"page":    page,
+		"offset":  offset,
+	}
+	compose(param, "startblock", startBlock)
+	compose(param, "endblock", endBlock)
+	if desc {
+		param["sort"] = "desc"
+	} else {
+		param["sort"] = "asc"
+	}
+
+	err = c.hecocall("account", "txlist", param, &txs)
+	return
+}
+
 // InternalTxByAddress gets a list of "internal" transactions by address
 //
 // startBlock and endBlock can be nil
@@ -72,6 +95,29 @@ func (c *Client) InternalTxByAddress(address string, startBlock *int, endBlock *
 	}
 
 	err = c.call("account", "txlistinternal", param, &txs)
+	return
+}
+
+// HecoInternalTxByAddress gets a list of "internal" transactions by address
+//
+// startBlock and endBlock can be nil
+//
+// if desc is true, result will be sorted in descendant order.
+func (c *Client) HecoInternalTxByAddress(address string, startBlock *int, endBlock *int, page int, offset int, desc bool) (txs []InternalTx, err error) {
+	param := M{
+		"address": address,
+		"page":    page,
+		"offset":  offset,
+	}
+	compose(param, "startblock", startBlock)
+	compose(param, "endblock", endBlock)
+	if desc {
+		param["sort"] = "desc"
+	} else {
+		param["sort"] = "asc"
+	}
+
+	err = c.hecocall("account", "txlistinternal", param, &txs)
 	return
 }
 
@@ -104,6 +150,38 @@ func (c *Client) ERC20Transfers(contractAddress, address *string, startBlock *in
 	}
 
 	err = c.call("account", "tokentx", param, &txs)
+	return
+}
+
+// HecoERC20Transfers get a list of "erc20 - token transfer events" by
+// contract address and/or from/to address.
+//
+// leave undesired condition to nil.
+//
+// Note on a Etherscan bug:
+// Some ERC20 contract does not have valid decimals information in Etherscan.
+// When that happens, TokenName, TokenSymbol are empty strings,
+// and TokenDecimal is 0.
+//
+// More information can be found at:
+// https://github.com/nanmu42/etherscan-api/issues/8
+func (c *Client) HecoERC20Transfers(contractAddress, address *string, startBlock *int, endBlock *int, page int, offset int, desc bool) (txs []ERC20Transfer, err error) {
+	param := M{
+		"page":   page,
+		"offset": offset,
+	}
+	compose(param, "contractaddress", contractAddress)
+	compose(param, "address", address)
+	compose(param, "startblock", startBlock)
+	compose(param, "endblock", endBlock)
+
+	if desc {
+		param["sort"] = "desc"
+	} else {
+		param["sort"] = "asc"
+	}
+
+	err = c.hecocall("account", "tokentx", param, &txs)
 	return
 }
 
@@ -143,6 +221,23 @@ func (c *Client) ERC721TransfersByAddress(address *string, startBlock *int, endB
 	}
 
 	err = c.call("account", "tokennfttx", param, &txs)
+	return
+}
+
+// HecoERC721TransfersByAddress get a list of "erc72 - token transfer events" by address.
+func (c *Client) HecoERC721TransfersByAddress(address *string, startBlock *int, endBlock *int, desc bool) (txs []ERC721Transfer, err error) {
+	param := M{
+		"address": address,
+	}
+	compose(param, "startblock", startBlock)
+	compose(param, "endblock", endBlock)
+	if desc {
+		param["sort"] = "desc"
+	} else {
+		param["sort"] = "asc"
+	}
+
+	err = c.hecocall("account", "tokennfttx", param, &txs)
 	return
 }
 
